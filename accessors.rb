@@ -2,7 +2,8 @@
 
 #   метод   
 #   attr_accessor_with_history
-#   Этот метод динамически создает геттеры и сеттеры для любого кол-ва атрибутов, при этом сеттер сохраняет все значения 
+# Этот метод динамически создает геттеры и сеттеры для любого кол-ва атрибутов,
+#   при этом сеттер сохраняет все значения 
 #   инстанс-переменной при изменении этого значения. 
 
 #   Также в класс, в который подключается модуль должен добавляться инстанс-метод  
@@ -18,20 +19,24 @@
 
 module Accessors
 
+# Этот метод динамически создает геттеры и сеттеры для любого кол-ва атрибутов, 
   def attr_accessor_with_history(*names)
     names.each do |name|
       sym_name = "@#{name}".to_sym
+      sym_name_hist = "@#{name}_history".to_sym
+
       define_method(name) { instance_variable_get(sym_name) }
-      define_method("#{name}=".to_sym) { |value| instance_variable_set(sym_name, value) }
+      define_method("#{name}=".to_sym) do  |value| 
+        instance_variable_set(sym_name,value) 
+        instance_variable_set(sym_name_hist,)
     end
   end
 
-  def name_history(name)
-    sym_name = "@#{name}_history".to_sym 
-    self.class_variable_set(sym_name) 
-    Bee.class_variables
+  def name_history(name) 
+    sym_name_hist = "@#{name}_history".to_sym
+    self.instance_variable_get(sym_name_hist)
   end
-
+  
   def strong_attr_accessor(name, name_class)
     sym_name = "@#{name}".to_sym
     define_method(name) { instance_variable_get(sym_name) }
@@ -46,9 +51,9 @@ module Accessors
 end
 
 class Bee
-  extend Accessors
+  include Accessors
 
-  attr_accessor_with_history :bunbl_bee
-  strong_attr_accessor('bunble_free', "string")
+  attr_accessor_with_history :bun, :bas, :bis
+  strong_attr_accessor('bun', "string")
 
 end
